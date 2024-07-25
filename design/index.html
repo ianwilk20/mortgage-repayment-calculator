@@ -26,50 +26,83 @@
                 <div class="mrtg-form-inputs">
                     <div class="input-container">
                         <label for="mrtg-amt">Mortgage Amount</label>
-                        <span class="input-icon-dollar">
-                            <input id="mrtg-amt" type="number" />
-                        </span>
+                        <div>
+                            <input
+                                id="mrtg-amt"
+                                type="text"
+                                inputmode="numeric"
+                            />
+                            <i class="input-hint dollar-hint">$</i>
+                        </div>
                     </div>
 
                     <div class="input-container">
-                        <label for="mrtg-amt">Mortgage Term</label>
-                        <input id="mrtg-term" type="number" />
-                    </div>
-
-                    <div>
-                        <label for="mrtg-amt">Interest Rate</label>
-                        <input id="mrtg-rate" type="number" />
+                        <label for="mrtg-term">Mortgage Term</label>
+                        <div>
+                            <input
+                                id="mrtg-term"
+                                type="text"
+                                inputmode="numeric"
+                            />
+                            <i class="input-hint years-hint">years</i>
+                        </div>
                     </div>
 
                     <div class="input-container">
-                        <p>Mortgage Type</p>
+                        <label for="mrtg-rate">Interest Rate</label>
                         <div>
                             <input
-                                type="radio"
-                                id="repayment"
-                                name="mrtg-type-repayment"
-                                value="repayment"
+                                id="mrtg-rate"
+                                type="text"
+                                inputmode="numeric"
                             />
-                            <label for="repayment">Repayment</label>
-                        </div>
-                        <div>
-                            <input
-                                type="radio"
-                                id="interest"
-                                name="mrtg-type-interest"
-                                value="interest"
-                            />
-                            <label for="interest">Interest Only</label>
+                            <i class="input-hint percent-hint">%</i>
                         </div>
                     </div>
+
+                    <fieldset id="mrtg-type">
+                        <div class="input-container">
+                            <p class="mrtg-type">Mortgage Type</p>
+                            <div
+                                id="mrtg-type-repayment-btn"
+                                class="radio-button"
+                                onclick="selectMrtgType('repayment')"
+                            >
+                                <input
+                                    type="radio"
+                                    id="mrtg-type-repayment"
+                                    name="mrtg-type"
+                                    value="repayment"
+                                />
+                                <label for="mrtg-type-repayment"
+                                    >Repayment</label
+                                >
+                            </div>
+                            <div
+                                id="mrtg-type-interest-btn"
+                                class="radio-button"
+                                onclick="selectMrtgType('interest')"
+                            >
+                                <input
+                                    type="radio"
+                                    id="mrtg-type-interest"
+                                    name="mrtg-type"
+                                    value="interest"
+                                />
+                                <label for="mrtg-type-interest"
+                                    >Interest Only</label
+                                >
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
-                <button>
+                <button class="btn-calculate">
                     <img class="icon-calculator" />Calculate Repayments
                 </button>
             </form>
             <section class="sec-results">
                 <!-- Empty results start -->
-                <div class="pre-calc-results-container">
+                <div id="init-res-container" class="pre-calc-results-container">
                     <img class="img-calculator" />
                     <h2>Results shown here</h2>
                     <p>
@@ -80,17 +113,25 @@
                 <!-- Empty results end -->
 
                 <!-- Completed results start -->
-                <div class="results-container">
+                <div
+                    id="final-res-container"
+                    class="results-container hidden-container"
+                >
                     <h2>Your results</h2>
-                    <p>
+                    <p class="results-container-desc">
                         Your results are shown below based on the information
                         you provided. To adjust the results, edit the form and
                         click “calculate repayments” again.
                     </p>
                     <div class="payments-container">
-                        <p>Your monthly repayments</p>
+                        <p class="monthly-repayments">
+                            Your monthly repayments
+                        </p>
                         <p id="res-monthly-payments"></p>
-                        <p>Total you'll repay over the term</p>
+                        <hr />
+                        <p class="total-repayments">
+                            Total you'll repay over the term
+                        </p>
                         <p id="res-total"></p>
                     </div>
                 </div>
@@ -98,10 +139,248 @@
             </section>
         </main>
         <footer class="attribution">
-            Challenge by
-            <a href="https://www.frontendmentor.io?ref=challenge"
+            Challenge by&nbsp;
+            <a
+                href="https://www.frontendmentor.io?ref=challenge"
+                target="_blank"
                 >Frontend Mentor</a
-            >. Coded by <a href="#">Your Name Here</a>.
+            >. Coded by&nbsp;
+            <a href="https://github.com/ianwilk20">Ian Wilkinson</a>.
         </footer>
+        <script>
+            let mrtg_form = document.getElementById('mrtg-form')
+            let option_repayment_button = document.getElementById(
+                'mrtg-type-repayment-btn'
+            )
+            let option_repayment = document.getElementById(
+                'mrtg-type-repayment'
+            )
+            let option_interest = document.getElementById('mrtg-type-interest')
+            let option_interest_button = document.getElementById(
+                'mrtg-type-interest-btn'
+            )
+            let mrtg_amt = document.getElementById('mrtg-amt')
+            let mrtg_term = document.getElementById('mrtg-term')
+            let mrtg_rate = document.getElementById('mrtg-rate')
+
+            let res_monthly_payments = document.getElementById(
+                'res-monthly-payments'
+            )
+            let res_total = document.getElementById('res-total')
+            let init_res_cntr = document.getElementById('init-res-container')
+            let final_res_cntr = document.getElementById('final-res-container')
+
+            let mrtg_type = ''
+            function selectMrtgType(type) {
+                mrtg_type = type
+                switch (type) {
+                    case 'repayment':
+                        option_repayment_button.classList.add('selected-radio')
+                        option_interest_button.classList.remove(
+                            'selected-radio'
+                        )
+                        break
+                    case 'interest':
+                        option_interest_button.classList.add('selected-radio')
+                        option_repayment_button.classList.remove(
+                            'selected-radio'
+                        )
+                        break
+                }
+            }
+
+            mrtg_form.addEventListener('submit', (e) => {
+                e.preventDefault()
+                console.log('In submit')
+
+                console.log(mrtg_type)
+                // Run validation of inputs
+                let inputsValid = true
+                //Formatting
+                // Mortgage Amount
+                if (mrtg_amt) {
+                    let parsedMrtgAmt = Number.parseFloat(
+                        mrtg_amt.replace(',', '')
+                    )
+                    if (Number.isNAN(parsedMrtgAmt)) {
+                        inputsValid = false
+                        addFieldError(
+                            mrtg_amt,
+                            mrtg_error_field,
+                            'Error: Not a number'
+                        ) // Need to add a error field for each of these inputs and write this function
+                    } else if (parsedMrtgAmt < 1 || parsedMrtgAmt > 100000000) {
+                        inputsValid = false
+                    }
+                }
+
+                if (mrtg_term) {
+                    let parsedMrtgTerm = Number.parseFloat(mrtg_term)
+                    if (Number.isNAN(parsedMrtgTerm)) {
+                        inputsValid = false
+                    } else if (parsedMrtgTerm < 1 || parsedMrtgTerm > 100) {
+                        inputsValid = false
+                    }
+                }
+
+                if (mrtg_rate) {
+                    let parsedMrtgRate = Number.parseFloat(mrtg_rate)
+                    if (Number.isNAN(parsedMrtgRate)) {
+                        inputsValid = false
+                    } else if (parsedMrtgRate < 0.01 || parsedMrtgRate > 100) {
+                        inputsValid = false
+                    }
+                }
+
+                // Format amt, rate, rate if needed
+                if (!inputsValid) {
+                    return
+                }
+
+                let monthly, total
+                switch (mrtg_type) {
+                    case 'repayment':
+                        console.log(
+                            mrtg_amt.value,
+                            ' - ',
+                            mrtg_term.value,
+                            ' - ',
+                            mrtg_rate.value
+                        )
+                        monthly = calculateMonthlyMortgageCost(
+                            mrtg_amt.value,
+                            mrtg_term.value,
+                            mrtg_rate.value
+                        )
+                        total = calculateTotalMortgageCost(
+                            mrtg_amt.value,
+                            mrtg_term.value,
+                            mrtg_rate.value
+                        )
+                        console.log(monthly, ' - ', total)
+                        break
+                    case 'interest':
+                        monthly = calculateMonthlyInterestCost(
+                            mrtg_amt.value,
+                            mrtg_term.value,
+                            mrtg_rate.value
+                        )
+                        total = calculateTotalInterestCost(
+                            mrtg_amt.value,
+                            mrtg_term.value,
+                            mrtg_rate.value
+                        )
+                        break
+                }
+                console.log(monthly, ' - ', total)
+                showResults(formatCost(monthly), formatCost(total))
+
+                // Repayment Calculation
+                // let monthlyRate = mrtg_rate.value / 12 / 100
+                // let numPayments = mrtg_term.value * 12
+                // let monthlyMrtgCost =
+                //     mrtg_amt.value *
+                //     ((monthlyRate * (1 + monthlyRate) ** numPayments) /
+                //         ((1 + monthlyRate) ** numPayments - 1))
+                // let totalMrtgCost = monthlyMrtgCost * numPayments
+                // console.log(
+                //     'Monthly: $' +
+                //         monthlyMrtgCost.toFixed(2) +
+                //         ' - Total: $' +
+                //         totalMrtgCost.toFixed(2)
+                // )
+
+                // Interest Calcuation
+            })
+
+            function showResults(monthly, total) {
+                init_res_cntr.classList.add('hidden-container')
+                final_res_cntr.classList.remove('hidden-container')
+                res_monthly_payments.innerText = `$${monthly}`
+                res_total.innerText = `$${total}`
+            }
+
+            function formatCost(cost) {
+                strCost = cost.toFixed(2).toString()
+                decimalIndex = strCost.indexOf('.')
+                splitDecimal = strCost.substring(decimalIndex, strCost.length)
+                splitRevCost = strCost
+                    .substring(
+                        0,
+                        decimalIndex > 0 ? decimalIndex : strCost.length
+                    )
+                    .split('')
+                    .reverse()
+                newCost = ''
+                for (let i = 0; i < splitRevCost.length; i++) {
+                    console.log(
+                        'i :',
+                        i,
+                        ' | i -1 = ',
+                        i - 1,
+                        ' | (i-1) % 3 = ',
+                        (i - 1) % 3
+                    )
+                    if (i > 0 && i % 3 === 0) {
+                        newCost += `,${splitRevCost[i]}`
+                    } else {
+                        newCost += splitRevCost[i]
+                    }
+                }
+                return newCost.split('').reverse().join('') + splitDecimal
+
+                // splitCost = cost.split('')
+                // revSplitCost = splitCost.reverse()
+                // newCost = ''
+                // for (let i = 0; i < revSplitCost.length; i++) {
+                //     if (i > 0 && i % 3 === 0) {
+                //         newCost += `,${revSplitCost[i]}`
+                //     } else {
+                //         newCost += revSplitCost[i]
+                //     }
+                // }
+                // return newCost.split('').reverse().join('')
+                // or use https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
+            }
+
+            function calculateMonthlyInterestCost(amount, term, rate) {
+                let monthlyRate = rate / 12 / 100
+                let monthlyInterest = amount * monthlyRate
+                let monthlyCombined = calculateMonthlyMortgageCost(
+                    amount,
+                    term,
+                    rate
+                )
+                return monthlyCombined - monthlyInterest
+            }
+
+            function calculateTotalInterestCost(amount, term, rate) {
+                let monthlyInterestCost = calculateMonthlyInterestCost(
+                    amount,
+                    rate
+                )
+                return monthlyInterestCost * (term * 12)
+            }
+
+            function calculateMonthlyMortgageCost(amount, term, rate) {
+                let monthlyRate = rate / 12 / 100
+                let numPayments = term * 12
+                let monthlyMrtgCost =
+                    amount *
+                    ((monthlyRate * (1 + monthlyRate) ** numPayments) /
+                        ((1 + monthlyRate) ** numPayments - 1))
+                return monthlyMrtgCost
+            }
+
+            function calculateTotalMortgageCost(amount, term, rate) {
+                let monthlyMrtgCost = calculateMonthlyMortgageCost(
+                    amount,
+                    term,
+                    rate
+                )
+                return monthlyMrtgCost * (term * 12)
+            }
+            // Note: Strip the commas from the mortage amount
+        </script>
     </body>
 </html>
