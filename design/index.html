@@ -32,8 +32,11 @@
                                 type="text"
                                 inputmode="numeric"
                             />
-                            <i class="input-hint dollar-hint">$</i>
+                            <i id="dollar-hint" class="input-hint dollar-hint"
+                                >$</i
+                            >
                         </div>
+                        <p id="mrtg-amt-error"></p>
                     </div>
 
                     <div class="input-container">
@@ -44,8 +47,11 @@
                                 type="text"
                                 inputmode="numeric"
                             />
-                            <i class="input-hint years-hint">years</i>
+                            <i id="years-hint" class="input-hint years-hint"
+                                >years</i
+                            >
                         </div>
+                        <p id="mrtg-term-error"></p>
                     </div>
 
                     <div class="input-container">
@@ -56,8 +62,11 @@
                                 type="text"
                                 inputmode="numeric"
                             />
-                            <i class="input-hint percent-hint">%</i>
+                            <i id="percent-hint" class="input-hint percent-hint"
+                                >%</i
+                            >
                         </div>
+                        <p id="mrtg-rate-error"></p>
                     </div>
 
                     <fieldset id="mrtg-type">
@@ -71,7 +80,6 @@
                                 <input
                                     type="radio"
                                     id="mrtg-type-repayment"
-                                    name="mrtg-type"
                                     value="repayment"
                                 />
                                 <label for="mrtg-type-repayment"
@@ -86,7 +94,6 @@
                                 <input
                                     type="radio"
                                     id="mrtg-type-interest"
-                                    name="mrtg-type"
                                     value="interest"
                                 />
                                 <label for="mrtg-type-interest"
@@ -94,6 +101,7 @@
                                 >
                             </div>
                         </div>
+                        <p id="mrtg-type-error"></p>
                     </fieldset>
                 </div>
                 <button class="btn-calculate">
@@ -163,6 +171,15 @@
             let mrtg_term = document.getElementById('mrtg-term')
             let mrtg_rate = document.getElementById('mrtg-rate')
 
+            let mrtg_amt_err = document.getElementById('mrtg-amt-error')
+            let mrtg_term_err = document.getElementById('mrtg-term-error')
+            let mrtg_rate_err = document.getElementById('mrtg-rate-error')
+            let mrtg_type_err = document.getElementById('mrtg-type-error')
+
+            let mrtg_amt_hint = document.getElementById('dollar-hint')
+            let mrtg_term_hint = document.getElementById('years-hint')
+            let mrtg_rate_hint = document.getElementById('percent-hint')
+
             let res_monthly_payments = document.getElementById(
                 'res-monthly-payments'
             )
@@ -171,16 +188,23 @@
             let final_res_cntr = document.getElementById('final-res-container')
 
             let mrtg_type = ''
+
+            mrtg_type_buttons = document.getElementById('input[type="radio"]')
+
             function selectMrtgType(type) {
                 mrtg_type = type
                 switch (type) {
                     case 'repayment':
+                        option_interest.checked = false
+                        option_repayment.checked = true
                         option_repayment_button.classList.add('selected-radio')
                         option_interest_button.classList.remove(
                             'selected-radio'
                         )
                         break
                     case 'interest':
+                        option_repayment.checked = false
+                        option_interest.checked = true
                         option_interest_button.classList.add('selected-radio')
                         option_repayment_button.classList.remove(
                             'selected-radio'
@@ -193,46 +217,151 @@
                 e.preventDefault()
                 console.log('In submit')
 
+                let parsedMrtgAmt, parsedMrtgTerm, parsedMrtgRate
+
                 console.log(mrtg_type)
                 // Run validation of inputs
                 let inputsValid = true
                 //Formatting
                 // Mortgage Amount
-                if (mrtg_amt) {
-                    let parsedMrtgAmt = Number.parseFloat(
-                        mrtg_amt.replace(',', '')
+                if (mrtg_amt.value) {
+                    parsedMrtgAmt = Number.parseFloat(
+                        mrtg_amt.value.replace(',', '')
                     )
-                    if (Number.isNAN(parsedMrtgAmt)) {
+                    console.log(parsedMrtgAmt)
+                    if (Number.isNaN(parsedMrtgAmt)) {
                         inputsValid = false
-                        addFieldError(
+                        addFieldAndHintError(
                             mrtg_amt,
-                            mrtg_error_field,
+                            mrtg_amt_hint,
+                            mrtg_amt_err,
                             'Error: Not a number'
-                        ) // Need to add a error field for each of these inputs and write this function
+                        )
                     } else if (parsedMrtgAmt < 1 || parsedMrtgAmt > 100000000) {
                         inputsValid = false
+                        addFieldAndHintError(
+                            mrtg_amt,
+                            mrtg_amt_hint,
+                            mrtg_amt_err,
+                            'Error: Mortgage amount must be between $1.00 and $100,000,000.00'
+                        )
+                    } else {
+                        removeFieldAndHintError(
+                            mrtg_amt,
+                            mrtg_amt_hint,
+                            mrtg_amt_err
+                        )
                     }
+                } else {
+                    inputsValid = false
+                    addFieldAndHintError(
+                        mrtg_amt,
+                        mrtg_amt_hint,
+                        mrtg_amt_err,
+                        'This field is required'
+                    )
                 }
 
-                if (mrtg_term) {
-                    let parsedMrtgTerm = Number.parseFloat(mrtg_term)
-                    if (Number.isNAN(parsedMrtgTerm)) {
+                // Mortgage Term
+                if (mrtg_term.value) {
+                    parsedMrtgTerm = Number.parseFloat(mrtg_term.value)
+                    console.log(parsedMrtgTerm)
+                    if (Number.isNaN(parsedMrtgTerm)) {
                         inputsValid = false
+                        addFieldAndHintError(
+                            mrtg_term,
+                            mrtg_term_hint,
+                            mrtg_term_err,
+                            'Error: Not a number'
+                        ) // Need to add a error field for each of these inputs and write this function
                     } else if (parsedMrtgTerm < 1 || parsedMrtgTerm > 100) {
                         inputsValid = false
+                        addFieldAndHintError(
+                            mrtg_term,
+                            mrtg_term_hint,
+                            mrtg_term_err,
+                            'Error: Mortgage term must be between 1 and 100 years'
+                        )
+                    } else if (parsedMrtgTerm % 1 !== 0) {
+                        inputsValid = false
+                        addFieldAndHintError(
+                            mrtg_term,
+                            mrtg_term_hint,
+                            mrtg_term_err,
+                            'Error: Mortgage term must be a whole number'
+                        )
+                    } else {
+                        removeFieldAndHintError(
+                            mrtg_term,
+                            mrtg_term_hint,
+                            mrtg_term_err
+                        )
                     }
+                } else {
+                    inputsValid = false
+                    addFieldAndHintError(
+                        mrtg_term,
+                        mrtg_term_hint,
+                        mrtg_term_err,
+                        'This field is required'
+                    )
                 }
 
-                if (mrtg_rate) {
-                    let parsedMrtgRate = Number.parseFloat(mrtg_rate)
-                    if (Number.isNAN(parsedMrtgRate)) {
+                // Mortgage Rate
+                if (mrtg_rate.value) {
+                    parsedMrtgRate = Number.parseFloat(mrtg_rate.value)
+                    console.log(parsedMrtgRate)
+                    if (Number.isNaN(parsedMrtgRate)) {
                         inputsValid = false
+                        addFieldAndHintError(
+                            mrtg_rate,
+                            mrtg_rate_hint,
+                            mrtg_rate_err,
+                            'Error: Not a number'
+                        ) // Need to add a error field for each of these inputs and write this function
                     } else if (parsedMrtgRate < 0.01 || parsedMrtgRate > 100) {
                         inputsValid = false
+                        addFieldAndHintError(
+                            mrtg_rate,
+                            mrtg_rate_hint,
+                            mrtg_rate_err,
+                            'Error: Mortgage rate must be between 0.01% and 100%'
+                        )
+                    } else {
+                        removeFieldAndHintError(
+                            mrtg_rate,
+                            mrtg_rate_hint,
+                            mrtg_rate_err
+                        )
+                    }
+                } else {
+                    inputsValid = false
+                    addFieldAndHintError(
+                        mrtg_rate,
+                        mrtg_rate_hint,
+                        mrtg_rate_err,
+                        'This field is required'
+                    )
+                }
+
+                // Mortgage Type
+                if (!mrtg_type) {
+                    inputsValid = false
+                    addFieldTextError(mrtg_type_err, 'This field is required')
+                } else {
+                    if (mrtg_type !== 'repayment' && mrtg_type !== 'interest') {
+                        inputsValid = false
+                        addFieldTextError(
+                            mrtg_type_err,
+                            'Error: "Repayment" or "Interest Only" are the only valid inputs'
+                        )
+                    } else {
+                        removeFieldTextError(mrtg_type_err)
                     }
                 }
 
                 // Format amt, rate, rate if needed
+                console.log('Are inputs valid: ', inputsValid)
                 if (!inputsValid) {
                     return
                 }
@@ -241,57 +370,93 @@
                 switch (mrtg_type) {
                     case 'repayment':
                         console.log(
-                            mrtg_amt.value,
+                            parsedMrtgAmt,
                             ' - ',
-                            mrtg_term.value,
+                            parsedMrtgTerm,
                             ' - ',
-                            mrtg_rate.value
+                            parsedMrtgRate
                         )
                         monthly = calculateMonthlyMortgageCost(
-                            mrtg_amt.value,
-                            mrtg_term.value,
-                            mrtg_rate.value
+                            parsedMrtgAmt,
+                            parsedMrtgTerm,
+                            parsedMrtgRate
                         )
                         total = calculateTotalMortgageCost(
-                            mrtg_amt.value,
-                            mrtg_term.value,
-                            mrtg_rate.value
+                            parsedMrtgAmt,
+                            parsedMrtgTerm,
+                            parsedMrtgRate
                         )
                         console.log(monthly, ' - ', total)
                         break
                     case 'interest':
                         monthly = calculateMonthlyInterestCost(
-                            mrtg_amt.value,
-                            mrtg_term.value,
-                            mrtg_rate.value
+                            parsedMrtgAmt,
+                            parsedMrtgTerm,
+                            parsedMrtgRate
                         )
                         total = calculateTotalInterestCost(
-                            mrtg_amt.value,
-                            mrtg_term.value,
-                            mrtg_rate.value
+                            parsedMrtgAmt,
+                            parsedMrtgTerm,
+                            parsedMrtgRate
                         )
                         break
                 }
                 console.log(monthly, ' - ', total)
                 showResults(formatCost(monthly), formatCost(total))
-
-                // Repayment Calculation
-                // let monthlyRate = mrtg_rate.value / 12 / 100
-                // let numPayments = mrtg_term.value * 12
-                // let monthlyMrtgCost =
-                //     mrtg_amt.value *
-                //     ((monthlyRate * (1 + monthlyRate) ** numPayments) /
-                //         ((1 + monthlyRate) ** numPayments - 1))
-                // let totalMrtgCost = monthlyMrtgCost * numPayments
-                // console.log(
-                //     'Monthly: $' +
-                //         monthlyMrtgCost.toFixed(2) +
-                //         ' - Total: $' +
-                //         totalMrtgCost.toFixed(2)
-                // )
-
-                // Interest Calcuation
             })
+
+            function addHintError(field) {
+                field.classList.add('error-hint')
+            }
+
+            function addFieldTextError(field_err, error_text) {
+                field_err.classList.add('show-input-error')
+                field_err.innerText = error_text
+            }
+
+            function addInputFieldError(field) {
+                field.classList.add('invalid-input')
+            }
+
+            function addFieldError(field, field_err, error_text) {
+                addInputFieldError(field)
+                addFieldTextError(field_err, error_text)
+            }
+
+            function addFieldAndHintError(
+                field,
+                field_hint,
+                field_error,
+                error_text
+            ) {
+                addInputFieldError(field)
+                addHintError(field_hint)
+                addFieldTextError(field_error, error_text)
+            }
+
+            function removeHintError(field) {
+                field.classList.remove('error-hint')
+            }
+
+            function removeFieldTextError(field_err) {
+                field_err.classList.remove('show-input-error')
+                field_err.innerText = ''
+            }
+
+            function removeInputError(field) {
+                field.classList.remove('invalid-input')
+            }
+
+            function removeFieldError(field, field_err) {
+                removeInputError(field)
+                removeFieldTextError(field_err)
+            }
+
+            function removeFieldAndHintError(field, field_hint, field_err) {
+                removeInputError(field)
+                removeFieldTextError(field_err)
+                removeHintError(field_hint)
+            }
 
             function showResults(monthly, total) {
                 init_res_cntr.classList.add('hidden-container')
@@ -328,35 +493,17 @@
                     }
                 }
                 return newCost.split('').reverse().join('') + splitDecimal
-
-                // splitCost = cost.split('')
-                // revSplitCost = splitCost.reverse()
-                // newCost = ''
-                // for (let i = 0; i < revSplitCost.length; i++) {
-                //     if (i > 0 && i % 3 === 0) {
-                //         newCost += `,${revSplitCost[i]}`
-                //     } else {
-                //         newCost += revSplitCost[i]
-                //     }
-                // }
-                // return newCost.split('').reverse().join('')
-                // or use https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
             }
 
             function calculateMonthlyInterestCost(amount, term, rate) {
                 let monthlyRate = rate / 12 / 100
-                let monthlyInterest = amount * monthlyRate
-                let monthlyCombined = calculateMonthlyMortgageCost(
-                    amount,
-                    term,
-                    rate
-                )
-                return monthlyCombined - monthlyInterest
+                return amount * monthlyRate
             }
 
             function calculateTotalInterestCost(amount, term, rate) {
                 let monthlyInterestCost = calculateMonthlyInterestCost(
                     amount,
+                    term,
                     rate
                 )
                 return monthlyInterestCost * (term * 12)
