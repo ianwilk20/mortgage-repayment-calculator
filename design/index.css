@@ -17,34 +17,211 @@ body {
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-main {
-    display: flex;
-    flex-direction: column;
-}
-
 @media screen and (width < 750px) {
+    main {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #mrtg-form {
+        gap: 1.25rem;
+        padding: 2rem 1.25rem;
+    }
+
+    .mrtg-form-inputs {
+        gap: 1rem;
+    }
+
+    .sec-results {
+        background-color: var(--slate-900);
+    }
+
+    .side-by-side-input-container {
+        flex-direction: column;
+    }
+
+    .btn-calculate {
+        width: 100%;
+    }
+
+    .results-container {
+        gap: 1rem;
+        padding: 2rem 1.5rem;
+    }
+
+    .payments-container {
+        gap: 0.5rem;
+        padding: 1.5rem 1rem;
+    }
+
+    #res-monthly-payments {
+        font-size: 2.5rem;
+    }
+
+    .attribution {
+        background: var(--slate-900);
+        color: var(--slate-300);
+    }
+    .attribution a {
+        color: var(--white);
+    }
 }
 
 @media screen and (750px <= width < 1200px) {
     main {
-        padding: 5% 10%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         background-color: var(--slate-100);
+        min-height: 100vh;
+        justify-content: center;
     }
 
     #mrtg-form {
+        width: 650px;
+        padding: 2rem 1.75rem;
+        gap: 1.25rem;
         border-radius: 1rem 1rem 0rem 0rem;
     }
 
-    .sec-results {
-        border-radius: 0rem 0rem 1rem 1rem;
+    .mrtg-form-inputs {
+        gap: 1rem;
     }
 
-    display: flex;
+    .sec-results {
+        width: 650px;
+        border-radius: 0rem 0rem 1rem 1rem;
+        background-color: var(--slate-900);
+    }
 
-    position: absolute;
-    right: 0;
-    no transform: ;
-    // How to get the years and % to stay still okay despite screen size changing
+    .mrtg-form-header {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .btn-calculate {
+        width: 50%;
+    }
+
+    .results-container {
+        gap: 1rem;
+        padding: 2rem;
+    }
+
+    .payments-container {
+        gap: 0.5rem;
+        padding: 2rem;
+    }
+
+    #res-monthly-payments {
+        font-size: 3rem;
+    }
+
+    footer {
+        bottom: 0;
+        position: relative;
+        left: 0;
+        right: 0;
+    }
+
+    .attribution {
+        background-color: transparent;
+        color: var(--slate-900);
+    }
+    .attribution a {
+        color: var(--slate-700);
+    }
+}
+@media screen and (width >= 1200px) {
+    main {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: var(--slate-100);
+        min-height: 100vh;
+        justify-content: center;
+    }
+
+    .content-container {
+        display: flex;
+        min-height: 500px;
+        max-height: 600px;
+    }
+
+    .mrtg-form-header {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    #mrtg-form {
+        width: 500px;
+        height: 100%;
+        padding: 2rem 1.75rem;
+        gap: 1.75rem;
+        border-radius: 1rem 0rem 0rem 1rem;
+    }
+
+    .mrtg-form-inputs {
+        gap: 1.25rem;
+    }
+
+    .btn-calculate {
+        width: 70%;
+    }
+
+    .rounded-background {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background-color: var(--slate-900);
+        border-radius: 0rem 1rem 1rem 5rem;
+    }
+
+    .justify-center {
+        justify-content: center;
+    }
+
+    .sec-results {
+        width: 500px;
+        height: inherit;
+        border-radius: 0rem 1rem 1rem 0rem;
+        background-color: var(--white);
+    }
+
+    .results-container {
+        gap: 1.5rem;
+        padding: 2rem;
+    }
+
+    .payments-container {
+        gap: 0.75rem;
+        padding: 2rem;
+    }
+
+    .payments-container > hr {
+        margin: 1rem 0rem 1rem 0rem;
+    }
+
+    #res-monthly-payments {
+        font-size: 3rem;
+    }
+
+    footer {
+        bottom: 0;
+        position: absolute;
+        left: 0;
+        right: 0;
+    }
+
+    .attribution {
+        background-color: transparent;
+        color: var(--slate-900);
+    }
+    .attribution a {
+        color: var(--slate-700);
+    }
 }
 
 #mrtg-form {
@@ -52,8 +229,7 @@ main {
     flex-direction: column;
     align-items: flex-start;
     background-color: var(--white);
-    padding: 2rem 1.25rem;
-    gap: 1.25rem;
+    box-sizing: border-box;
 }
 
 .mrtg-form-header {
@@ -85,7 +261,6 @@ h1 {
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: 1rem;
 }
 
 .input-container {
@@ -200,24 +375,32 @@ label[for='mrtg-rate'],
     border-radius: 0 !important;
 }
 
+.mrtg-amt-container,
+.mrtg-term-container,
+.mrtg-rate-container {
+    display: flex;
+    position: relative;
+}
+
 .dollar-hint {
-    transform: translate(1px, calc(-2.75rem + 1px));
+    left: 1px;
+    top: 1px;
     width: 2.5rem;
     border-radius: 0.25rem 0 0 0.25rem;
 }
 
 .years-hint {
-    transform: translate(19px, calc(-2.75rem + 1px));
     width: 4.25rem;
     border-radius: 0 0.25rem 0.25rem 0;
-    right: 2.5rem;
+    right: 1px;
+    top: 1px;
 }
 
 .percent-hint {
-    transform: translate(19px, calc(-2.75rem + 1px));
     width: 2.5rem;
     border-radius: 0 0.25rem 0.25rem 0;
-    right: 2.5rem;
+    right: 1px;
+    top: 1px;
 }
 
 .mrtg-type {
@@ -295,6 +478,14 @@ label[for='mrtg-type-interest'] {
     color: var(--slate-900);
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+}
+input[data-autocompleted] {
+    background-color: var(--white) !important;
+}
+
 #mrtg-amt-error,
 #mrtg-term-error,
 #mrtg-rate-error,
@@ -311,8 +502,12 @@ label[for='mrtg-type-interest'] {
     gap: 0.5rem;
 }
 
+.side-by-side-input-container {
+    display: flex;
+    gap: 1rem;
+}
+
 .btn-calculate {
-    width: 100%;
     height: 3rem;
     box-sizing: border-box;
     border: none;
@@ -338,10 +533,6 @@ label[for='mrtg-type-interest'] {
     margin-right: 0.5rem;
 }
 
-.sec-results {
-    background-color: var(--slate-900);
-}
-
 .pre-calc-results-container {
     display: flex;
     flex-direction: column;
@@ -354,6 +545,7 @@ label[for='mrtg-type-interest'] {
 .img-calculator {
     content: url('../assets/images/illustration-empty.svg');
     width: 50%;
+    max-height: 175px;
 }
 
 .pre-calc-results-container > h2,
@@ -375,8 +567,6 @@ label[for='mrtg-type-interest'] {
     display: flex;
     flex-direction: column;
     color: var(--white);
-    gap: 1rem;
-    padding: 2rem 1.25rem;
 }
 
 .results-container-desc,
@@ -391,15 +581,12 @@ label[for='mrtg-type-interest'] {
 .payments-container {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
     border-radius: 0.5rem;
     background: hsl(202deg 70.48% 8.86%);
-    padding: 1.5rem 1rem;
     box-shadow: inset 0px 3px 0px var(--lime);
 }
 
 #res-monthly-payments {
-    font-size: 2.5rem;
     font-weight: 700;
     color: var(--lime);
     margin: 0;
@@ -433,15 +620,9 @@ label[for='mrtg-type-interest'] {
 }
 
 .attribution {
-    background: var(--slate-900);
     font-size: 11px;
     text-align: center;
-    color: var(--slate-300);
     height: 2rem;
     padding-top: 1rem;
     margin-top: -1px;
-}
-.attribution a {
-    /* color: hsl(228, 45%, 44%); */
-    color: var(--white);
 }

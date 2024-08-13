@@ -17,134 +17,163 @@
     </head>
     <body>
         <main>
-            <form id="mrtg-form">
-                <div class="mrtg-form-header">
-                    <h1>Mortgage Calculator</h1>
-                    <button class="btn-clear-form">Clear All</button>
-                </div>
-
-                <div class="mrtg-form-inputs">
-                    <div class="input-container">
-                        <label for="mrtg-amt">Mortgage Amount</label>
-                        <div>
-                            <input
-                                id="mrtg-amt"
-                                type="text"
-                                inputmode="numeric"
-                            />
-                            <i id="dollar-hint" class="input-hint dollar-hint"
-                                >$</i
-                            >
-                        </div>
-                        <p id="mrtg-amt-error"></p>
+            <div class="content-container">
+                <form id="mrtg-form">
+                    <div class="mrtg-form-header">
+                        <h1>Mortgage Calculator</h1>
+                        <button
+                            class="btn-clear-form"
+                            onclick="clearInputs()"
+                            type="button"
+                        >
+                            Clear All
+                        </button>
                     </div>
 
-                    <div class="input-container">
-                        <label for="mrtg-term">Mortgage Term</label>
-                        <div>
-                            <input
-                                id="mrtg-term"
-                                type="text"
-                                inputmode="numeric"
-                            />
-                            <i id="years-hint" class="input-hint years-hint"
-                                >years</i
-                            >
-                        </div>
-                        <p id="mrtg-term-error"></p>
-                    </div>
-
-                    <div class="input-container">
-                        <label for="mrtg-rate">Interest Rate</label>
-                        <div>
-                            <input
-                                id="mrtg-rate"
-                                type="text"
-                                inputmode="numeric"
-                            />
-                            <i id="percent-hint" class="input-hint percent-hint"
-                                >%</i
-                            >
-                        </div>
-                        <p id="mrtg-rate-error"></p>
-                    </div>
-
-                    <fieldset id="mrtg-type">
+                    <div class="mrtg-form-inputs">
                         <div class="input-container">
-                            <p class="mrtg-type">Mortgage Type</p>
-                            <div
-                                id="mrtg-type-repayment-btn"
-                                class="radio-button"
-                                onclick="selectMrtgType('repayment')"
-                            >
+                            <label for="mrtg-amt">Mortgage Amount</label>
+                            <div class="mrtg-amt-container">
                                 <input
-                                    type="radio"
-                                    id="mrtg-type-repayment"
-                                    value="repayment"
+                                    id="mrtg-amt"
+                                    type="text"
+                                    inputmode="numeric"
                                 />
-                                <label for="mrtg-type-repayment"
-                                    >Repayment</label
+                                <i
+                                    id="dollar-hint"
+                                    class="input-hint dollar-hint"
+                                    >$</i
                                 >
                             </div>
-                            <div
-                                id="mrtg-type-interest-btn"
-                                class="radio-button"
-                                onclick="selectMrtgType('interest')"
-                            >
-                                <input
-                                    type="radio"
-                                    id="mrtg-type-interest"
-                                    value="interest"
-                                />
-                                <label for="mrtg-type-interest"
-                                    >Interest Only</label
-                                >
+                            <p id="mrtg-amt-error"></p>
+                        </div>
+
+                        <div class="side-by-side-input-container">
+                            <div class="input-container">
+                                <label for="mrtg-term">Mortgage Term</label>
+                                <div class="mrtg-term-container">
+                                    <input
+                                        id="mrtg-term"
+                                        type="text"
+                                        inputmode="numeric"
+                                    />
+                                    <i
+                                        id="years-hint"
+                                        class="input-hint years-hint"
+                                        >years</i
+                                    >
+                                </div>
+                                <p id="mrtg-term-error"></p>
+                            </div>
+
+                            <div class="input-container">
+                                <label for="mrtg-rate">Interest Rate</label>
+                                <div class="mrtg-rate-container">
+                                    <input
+                                        id="mrtg-rate"
+                                        type="text"
+                                        inputmode="numeric"
+                                    />
+                                    <i
+                                        id="percent-hint"
+                                        class="input-hint percent-hint"
+                                        >%</i
+                                    >
+                                </div>
+                                <p id="mrtg-rate-error"></p>
                             </div>
                         </div>
-                        <p id="mrtg-type-error"></p>
-                    </fieldset>
-                </div>
-                <button class="btn-calculate">
-                    <img class="icon-calculator" />Calculate Repayments
-                </button>
-            </form>
-            <section class="sec-results">
-                <!-- Empty results start -->
-                <div id="init-res-container" class="pre-calc-results-container">
-                    <img class="img-calculator" />
-                    <h2>Results shown here</h2>
-                    <p>
-                        Complete the form and click “calculate repayments” to
-                        see what your monthly repayments would be.
-                    </p>
-                </div>
-                <!-- Empty results end -->
 
-                <!-- Completed results start -->
-                <div
-                    id="final-res-container"
-                    class="results-container hidden-container"
-                >
-                    <h2>Your results</h2>
-                    <p class="results-container-desc">
-                        Your results are shown below based on the information
-                        you provided. To adjust the results, edit the form and
-                        click “calculate repayments” again.
-                    </p>
-                    <div class="payments-container">
-                        <p class="monthly-repayments">
-                            Your monthly repayments
-                        </p>
-                        <p id="res-monthly-payments"></p>
-                        <hr />
-                        <p class="total-repayments">
-                            Total you'll repay over the term
-                        </p>
-                        <p id="res-total"></p>
+                        <fieldset id="mrtg-type">
+                            <div class="input-container">
+                                <p class="mrtg-type">Mortgage Type</p>
+                                <div
+                                    id="mrtg-type-repayment-btn"
+                                    class="radio-button"
+                                    onclick="selectMrtgType('repayment')"
+                                >
+                                    <input
+                                        type="radio"
+                                        id="mrtg-type-repayment"
+                                        value="repayment"
+                                    />
+                                    <label for="mrtg-type-repayment"
+                                        >Repayment</label
+                                    >
+                                </div>
+                                <div
+                                    id="mrtg-type-interest-btn"
+                                    class="radio-button"
+                                    onclick="selectMrtgType('interest')"
+                                >
+                                    <input
+                                        type="radio"
+                                        id="mrtg-type-interest"
+                                        value="interest"
+                                    />
+                                    <label for="mrtg-type-interest"
+                                        >Interest Only</label
+                                    >
+                                </div>
+                            </div>
+                            <p id="mrtg-type-error"></p>
+                        </fieldset>
                     </div>
-                </div>
-                <!-- Completed results end -->
-            </section>
+                    <button class="btn-calculate">
+                        <img
+                            class="icon-calculator"
+                            aria-label="Icon of a calculator"
+                        />Calculate Repayments
+                    </button>
+                </form>
+                <section class="sec-results">
+                    <div class="rounded-background justify-center">
+                        <!-- Empty results start -->
+                        <div
+                            id="init-res-container"
+                            class="pre-calc-results-container"
+                        >
+                            <img
+                                class="img-calculator"
+                                aria-label="Illustration of a hand drawn calculator"
+                            />
+                            <h2>Results shown here</h2>
+                            <p>
+                                Complete the form and click “calculate
+                                repayments” to see what your monthly repayments
+                                would be.
+                            </p>
+                        </div>
+                        <!-- Empty results end -->
+
+                        <!-- Completed results start -->
+                        <div
+                            id="final-res-container"
+                            class="results-container hidden-container"
+                        >
+                            <h2>Your results</h2>
+                            <p class="results-container-desc">
+                                Your results are shown below based on the
+                                information you provided. To adjust the results,
+                                edit the form and click “calculate repayments”
+                                again.
+                            </p>
+                            <div class="payments-container">
+                                <p class="monthly-repayments">
+                                    Your monthly repayments
+                                </p>
+                                <p id="res-monthly-payments"></p>
+                                <hr />
+                                <p class="total-repayments">
+                                    Total you'll repay over the term
+                                </p>
+                                <p id="res-total"></p>
+                            </div>
+                        </div>
+                        <!-- Completed results end -->
+                    </div>
+                </section>
+            </div>
         </main>
         <footer class="attribution">
             Challenge by&nbsp;
@@ -190,28 +219,6 @@
             let mrtg_type = ''
 
             mrtg_type_buttons = document.getElementById('input[type="radio"]')
-
-            function selectMrtgType(type) {
-                mrtg_type = type
-                switch (type) {
-                    case 'repayment':
-                        option_interest.checked = false
-                        option_repayment.checked = true
-                        option_repayment_button.classList.add('selected-radio')
-                        option_interest_button.classList.remove(
-                            'selected-radio'
-                        )
-                        break
-                    case 'interest':
-                        option_repayment.checked = false
-                        option_interest.checked = true
-                        option_interest_button.classList.add('selected-radio')
-                        option_repayment_button.classList.remove(
-                            'selected-radio'
-                        )
-                        break
-                }
-            }
 
             mrtg_form.addEventListener('submit', (e) => {
                 e.preventDefault()
@@ -318,7 +325,7 @@
                             mrtg_rate_hint,
                             mrtg_rate_err,
                             'Error: Not a number'
-                        ) // Need to add a error field for each of these inputs and write this function
+                        )
                     } else if (parsedMrtgRate < 0.01 || parsedMrtgRate > 100) {
                         inputsValid = false
                         addFieldAndHintError(
@@ -405,6 +412,28 @@
                 showResults(formatCost(monthly), formatCost(total))
             })
 
+            function selectMrtgType(type) {
+                mrtg_type = type
+                switch (type) {
+                    case 'repayment':
+                        option_interest.checked = false
+                        option_repayment.checked = true
+                        option_repayment_button.classList.add('selected-radio')
+                        option_interest_button.classList.remove(
+                            'selected-radio'
+                        )
+                        break
+                    case 'interest':
+                        option_repayment.checked = false
+                        option_interest.checked = true
+                        option_interest_button.classList.add('selected-radio')
+                        option_repayment_button.classList.remove(
+                            'selected-radio'
+                        )
+                        break
+                }
+            }
+
             function addHintError(field) {
                 field.classList.add('error-hint')
             }
@@ -461,6 +490,7 @@
             function showResults(monthly, total) {
                 init_res_cntr.classList.add('hidden-container')
                 final_res_cntr.classList.remove('hidden-container')
+                final_res_cntr.parentElement.classList.remove('justify-center')
                 res_monthly_payments.innerText = `$${monthly}`
                 res_total.innerText = `$${total}`
             }
@@ -527,7 +557,15 @@
                 )
                 return monthlyMrtgCost * (term * 12)
             }
-            // Note: Strip the commas from the mortage amount
+
+            function clearInputs() {
+                mrtg_form.reset()
+                option_interest_button.classList.remove('selected-radio')
+                option_repayment_button.classList.remove('selected-radio')
+                init_res_cntr.classList.remove('hidden-container')
+                final_res_cntr.classList.add('hidden-container')
+                final_res_cntr.parentElement.classList.add('justify-center')
+            }
         </script>
     </body>
 </html>
